@@ -1,219 +1,122 @@
-import "./styles/App.css";
+import { useState, useRef, useEffect } from 'react';
 import { BsThreeDots } from "react-icons/bs";
-import { useRef, useEffect, useState } from "react";
+import "./styles/App.css";
 
 type CardProps = {
   text: string;
   indicatorValue?: number;
-  reverse?: boolean;
 };
 
 const TextCard = ({ text, indicatorValue = 1 }: CardProps) => {
   const textRef = useRef<HTMLParagraphElement>(null);
-  const indicatorRef = useRef<HTMLButtonElement>(null);
-  const measureRef = useRef<HTMLParagraphElement>(null);
   const [isSingleLine, setIsSingleLine] = useState(false);
-  const [needsExtraLine, setNeedsExtraLine] = useState(false);
-  const [lineHeight, setLineHeight] = useState(24);
 
   useEffect(() => {
-    const handleCheck = () => {
-      if (textRef.current && measureRef.current && (indicatorValue === 0 || indicatorRef.current)) {
-        const textEl = textRef.current;
-        const measureEl = measureRef.current;
-        const style = getComputedStyle(textEl);
-        const lh = parseFloat(style.lineHeight) || 24;
-        setLineHeight(lh);
-        const origHeight = textEl.clientHeight;
-        const numLines = Math.round(origHeight / lh);
-        let overflow = false;
-
-        if (indicatorValue !== 0 && indicatorRef.current) {
-          const indW = indicatorRef.current.offsetWidth + 8;
-          measureEl.style.width = `calc(${style.width} - ${indW}px)`;
-          measureEl.style.lineHeight = style.lineHeight;
-          measureEl.style.font = style.font;
-          measureEl.style.overflowWrap = style.overflowWrap;
-          measureEl.style.padding = style.padding;
-          measureEl.style.margin = style.margin;
-          measureEl.textContent = text;
-          const measureHeight = measureEl.clientHeight;
-          overflow = measureHeight > origHeight;
-        }
-
-        setNeedsExtraLine(overflow);
-        const effectiveSingle = numLines === 1 && !overflow;
-        setIsSingleLine(effectiveSingle);
+    const checkLines = () => {
+      if (textRef.current) {
+        const lineHeight = parseInt(getComputedStyle(textRef.current).lineHeight, 10) || 24;
+        const height = textRef.current.clientHeight;
+        setIsSingleLine(height <= lineHeight * 1.5);
       }
     };
 
-    handleCheck();
-    const observer = new ResizeObserver(handleCheck);
+    checkLines();
+    const observer = new ResizeObserver(checkLines);
     if (textRef.current) observer.observe(textRef.current);
+    
     return () => observer.disconnect();
-  }, [text, indicatorValue]);
+  }, [text]);
 
   return (
     <div className={`text-card ${isSingleLine ? 'single-line' : 'multi-line'}`}>
       <button className="menu-dots">
         <BsThreeDots className="bs"/>
       </button>
-      <p ref={textRef} style={{ marginRight: indicatorValue !== 0 ? '40px' : '0' }}>{text}</p>
-      {needsExtraLine && <div style={{ height: `${lineHeight}px` }} />}
-      {indicatorValue !== 0 && (
-        <button
-          ref={indicatorRef}
-          className={`indicator ${indicatorValue > 0 ? 'active' : ''}`}
-        >
-          {Math.abs(indicatorValue)}
-        </button>
-      )}
-      <p ref={measureRef} style={{ display: 'none' }} />
-    </div>
-  );
-};
-
-const TextWithImageBlock = ({ text, indicatorValue = 1 }: { text: string; imageUrl: string; indicatorValue?: number }) => {
-  const textRef = useRef<HTMLParagraphElement>(null);
-  const indicatorRef = useRef<HTMLButtonElement>(null);
-  const measureRef = useRef<HTMLParagraphElement>(null);
-  const [alignment, setAlignment] = useState<'center' | 'flex-start'>('center');
-  const [needsExtraLine, setNeedsExtraLine] = useState(false);
-  const [lineHeight, setLineHeight] = useState(24);
-
-  useEffect(() => {
-    const handleCheck = () => {
-      if (textRef.current && measureRef.current && (indicatorValue === 0 || indicatorRef.current)) {
-        const textEl = textRef.current;
-        const measureEl = measureRef.current;
-        const style = getComputedStyle(textEl);
-        const lh = parseFloat(style.lineHeight) || 24;
-        setLineHeight(lh);
-        const origHeight = textEl.clientHeight;
-        const numLines = Math.round(origHeight / lh);
-        setAlignment(numLines <= 2 ? 'center' : 'flex-start');
-        let overflow = false;
-
-        if (indicatorValue !== 0 && indicatorRef.current) {
-          const indW = indicatorRef.current.offsetWidth + 8;
-          measureEl.style.width = `calc(${style.width} - ${indW}px)`;
-          measureEl.style.lineHeight = style.lineHeight;
-          measureEl.style.font = style.font;
-          measureEl.style.overflowWrap = style.overflowWrap;
-          measureEl.style.padding = style.padding;
-          measureEl.style.margin = style.margin;
-          measureEl.textContent = text;
-          const measureHeight = measureEl.clientHeight;
-          overflow = measureHeight > origHeight;
-        }
-
-        setNeedsExtraLine(overflow);
-      }
-    };
-
-    handleCheck();
-    const observer = new ResizeObserver(handleCheck);
-    if (textRef.current) observer.observe(textRef.current);
-    return () => observer.disconnect();
-  }, [text, indicatorValue]);
-
-  return (
-    <div className="image-text-card" style={{ alignItems: alignment }}>
-      <div className="text-content">
-        <button className="menu-dots">
-          <BsThreeDots className="bs" />
-        </button>
-        <div className="asd">
-          <img src="/y300.webp" alt="Иллюстрация" />
-          <p ref={textRef} style={{ marginRight: indicatorValue !== 0 ? '40px' : '0' }}>{text}</p>
-        </div>
-        {needsExtraLine && <div style={{ height: `${lineHeight}px` }} />}
-        {indicatorValue !== 0 && (
-          <button
-            ref={indicatorRef}
-            className={`indicator ${indicatorValue > 0 ? 'active' : ''}`}
-          >
-            {Math.abs(indicatorValue)}
-          </button>
-        )}
-        <p ref={measureRef} style={{ display: 'none' }} />
-      </div>
-    </div>
-  );
-};
-
-const PictureCard = ({ text, indicatorValue = 1 }: CardProps) => {
-  const textRef = useRef<HTMLParagraphElement>(null);
-  const [alignment, setAlignment] = useState<'center' | 'flex-start'>('center');
-
-  useEffect(() => {
-    if (textRef.current) {
-      const checkAlignment = () => {
-        const element = textRef.current!;
-        const style = getComputedStyle(element);
-        const lineHeight = parseInt(style.lineHeight, 10) || 24;
-        const height = element.clientHeight;
-        setAlignment(height > lineHeight * 2.5 ? 'flex-start' : 'center');
-      };
-
-      checkAlignment();
-      const observer = new ResizeObserver(checkAlignment);
-      observer.observe(textRef.current);
-      return () => observer.disconnect();
-    }
-  }, [text]);
-
-  return (
-    <div className="picture-card">
-      <img
-        src="https://i.pinimg.com/736x/83/9a/cb/839acb672adb9d908888f435c6244c3f.jpg"
-        alt="Picture"
-      />
-      <button className="menu-dots">
-        <BsThreeDots className="bs"/>
-      </button>
+      <p ref={textRef}>{text}</p>
       {indicatorValue !== 0 && (
         <button className={`indicator ${indicatorValue > 0 ? 'active' : ''}`}>
           {Math.abs(indicatorValue)}
         </button>
       )}
-      <div className="text-content" style={{ alignItems: alignment }}>
-        <p ref={textRef} style={{ marginRight: indicatorValue !== 0 ? '40px' : '0' }}>{text}</p>
+    </div>
+  );
+};
+
+const TextWithImageBlock = ({ text, indicatorValue = 1 }: CardProps) => {
+  const textRef = useRef<HTMLParagraphElement>(null);
+  const [alignment, setAlignment] = useState<'center' | 'flex-start'>('center');
+
+  useEffect(() => {
+    const checkAlignment = () => {
+      if (textRef.current) {
+        const lineHeight = parseInt(getComputedStyle(textRef.current).lineHeight, 10) || 24;
+        const height = textRef.current.clientHeight;
+        setAlignment(height > lineHeight * 2 ? 'flex-start' : 'center');
+      }
+    };
+
+    checkAlignment();
+    const observer = new ResizeObserver(checkAlignment);
+    if (textRef.current) observer.observe(textRef.current);
+    
+    return () => observer.disconnect();
+  }, [text]);
+
+  return (
+    <div className="image-text-card" style={{ alignItems: alignment }}>
+      <img src="/y300.webp" alt="Иллюстрация" />
+      <div className="text-content">
+        <button className="menu-dots">
+          <BsThreeDots className="bs" />
+        </button>
+        <p ref={textRef}>{text}</p>
+        {indicatorValue !== 0 && (
+          <button className={`indicator ${indicatorValue > 0 ? 'active' : ''}`}>
+            {Math.abs(indicatorValue)}
+          </button>
+        )}
       </div>
     </div>
   );
 };
 
-const PictureCardReverse = ({ text, indicatorValue = 1 }: CardProps) => {
+const PictureCard = ({ text, indicatorValue = 1, reverse = false }: CardProps & { reverse?: boolean }) => {
   const textRef = useRef<HTMLParagraphElement>(null);
   const [alignment, setAlignment] = useState<'center' | 'flex-start'>('center');
 
   useEffect(() => {
-    if (textRef.current) {
-      const checkAlignment = () => {
-        const element = textRef.current!;
-        const style = getComputedStyle(element);
-        const lineHeight = parseInt(style.lineHeight, 10) || 24;
-        const height = element.clientHeight;
-        setAlignment(height > lineHeight * 2.5 ? 'flex-start' : 'center');
-      };
+    const checkAlignment = () => {
+      if (textRef.current) {
+        const lineHeight = parseInt(getComputedStyle(textRef.current).lineHeight, 10) || 24;
+        const height = textRef.current.clientHeight;
+        setAlignment(height > lineHeight * 2 ? 'flex-start' : 'center');
+      }
+    };
 
-      checkAlignment();
-      const observer = new ResizeObserver(checkAlignment);
-      observer.observe(textRef.current);
-      return () => observer.disconnect();
-    }
+    checkAlignment();
+    const observer = new ResizeObserver(checkAlignment);
+    if (textRef.current) observer.observe(textRef.current);
+    
+    return () => observer.disconnect();
   }, [text]);
 
   return (
     <div className="picture-card">
+      {!reverse && (
+        <img
+          src="https://i.pinimg.com/736x/83/9a/cb/839acb672adb9d908888f435c6244c3f.jpg"
+          alt="Picture"
+        />
+      )}
       <div className="text-content" style={{ alignItems: alignment }}>
-        <p ref={textRef} style={{ marginRight: indicatorValue !== 0 ? '40px' : '0' }}>{text}</p>
+        <p ref={textRef}>{text}</p>
       </div>
-      <img
-        src="https://i.pinimg.com/736x/83/9a/cb/839acb672adb9d908888f435c6244c3f.jpg"
-        alt="Picture"
-      />
+      {reverse && (
+        <img
+          src="https://i.pinimg.com/736x/83/9a/cb/839acb672adb9d908888f435c6244c3f.jpg"
+          alt="Picture"
+        />
+      )}
       <button className="menu-dots">
         <BsThreeDots className="bs"/>
       </button>
@@ -235,13 +138,10 @@ const App = () => {
     setIndicatorValue(Math.max(-9999, Math.min(9999, num)));
   };
 
-  const textItems = Array(4).fill(testText);
-  const imageTextItems = Array(4).fill("quenching your thirst. It plays a crucial role in maintaining the proper functioning of your body.");
-  
   return (
     <div className="wrapper-app">
       <div className="text-section">
-        {textItems.map((_, idx) => (
+        {Array(4).fill(0).map((_, idx) => (
           <TextCard 
             key={`text-${idx}`} 
             text={testText} 
@@ -251,37 +151,37 @@ const App = () => {
       </div>
 
       <div className="image-text-section">
-        {imageTextItems.map((_, idx) => (
+        {Array(4).fill(0).map((_, idx) => (
           <TextWithImageBlock 
             key={`img-text-${idx}`} 
             text={testText} 
-            imageUrl="https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80"
             indicatorValue={indicatorValue}
           />
         ))}
       </div>
 
       <div className="picture-block">
-        <PictureCard 
-          text={testText}
-          indicatorValue={indicatorValue} 
-        />
-        <PictureCardReverse
-          text={testText}
-          indicatorValue={indicatorValue} />
+        <PictureCard text={testText} indicatorValue={indicatorValue} />
+        <PictureCard text={testText} indicatorValue={indicatorValue} reverse />
       </div>
 
       <div className="settings">
         <div className="settings-panel">
           <label>
-            Tekst:
-            <textarea value={testText} onChange={(e) => setTestText(e.target.value) } className="settings-textarea" id="">{testText}</textarea>
+            Text:
+            <textarea 
+              value={testText} 
+              onChange={(e) => setTestText(e.target.value)} 
+              className="settings-textarea"
+            />
+          </label>
+          <label>
             Indicator:
             <input
               type="number"
               value={indicatorValue}
               onChange={handleIndicatorChange}
-              style={{ width: "100%", padding: "6px", marginTop: "8px" }}
+              style={{ width: "100%", padding: "8px", marginTop: "8px", boxSizing: "border-box" }}
             />
           </label>
         </div>
@@ -289,4 +189,5 @@ const App = () => {
     </div>
   );
 };
+
 export default App;
