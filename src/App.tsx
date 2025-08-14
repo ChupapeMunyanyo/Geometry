@@ -10,7 +10,7 @@ type CardProps = {
 const TextCard = ({ text, indicatorValue = 1 }: CardProps) => {
   const textRef = useRef<HTMLParagraphElement>(null);
   const [isSingleLine, setIsSingleLine] = useState(false);
-
+  
   useEffect(() => {
     const checkLines = () => {
       if (textRef.current) {
@@ -26,9 +26,9 @@ const TextCard = ({ text, indicatorValue = 1 }: CardProps) => {
     
     return () => observer.disconnect();
   }, [text]);
-
+  
   return (
-    <div className={`text-card ${isSingleLine ? 'single-line' : 'multi-line'}`}>
+    <div className={`text-card ${isSingleLine ? 'single-line' : ''}`}>
       <button className="menu-dots">
         <BsThreeDots className="bs"/>
       </button>
@@ -69,7 +69,7 @@ const TextWithImageBlock = ({ text, indicatorValue = 1 }: CardProps) => {
           <BsThreeDots className="bs" />
         </button>
         <div className="asd">
-          <img src="/y300.webp" alt="Иллюстрация" />
+          <img src="a4989700c519ce886523f0185b0c77105648b279.jpg" alt="Иллюстрация" />
           <p ref={textRef}>{text}</p>
         </div>
         {indicatorValue !== 0 && (
@@ -82,7 +82,7 @@ const TextWithImageBlock = ({ text, indicatorValue = 1 }: CardProps) => {
   );
 };
 
-const PictureCard = ({ text, indicatorValue = 1, reverse = false }: CardProps & { reverse?: boolean }) => {
+const PictureCard = ({ text, indicatorValue = 1, reverse = false, blurIndicator = false }: CardProps & { reverse?: boolean, blurIndicator?: boolean }) => {
   const textRef = useRef<HTMLParagraphElement>(null);
   const [alignment, setAlignment] = useState<'center' | 'flex-start'>('center');
 
@@ -101,12 +101,12 @@ const PictureCard = ({ text, indicatorValue = 1, reverse = false }: CardProps & 
     
     return () => observer.disconnect();
   }, [text]);
-
+  
   return (
     <div className="picture-card">
       {!reverse && (
         <img
-          src="https://i.pinimg.com/736x/83/9a/cb/839acb672adb9d908888f435c6244c3f.jpg"
+          src="278a6ae038bb6ade654115eda25da9a94265964f.jpg"
           alt="Picture"
         />
       )}
@@ -115,7 +115,7 @@ const PictureCard = ({ text, indicatorValue = 1, reverse = false }: CardProps & 
       </div>
       {reverse && (
         <img
-          src="https://i.pinimg.com/736x/83/9a/cb/839acb672adb9d908888f435c6244c3f.jpg"
+          src="98e3884d016edc047e8384431ccd3799dd68570b.jpg"
           alt="Picture"
         />
       )}
@@ -127,11 +127,19 @@ const PictureCard = ({ text, indicatorValue = 1, reverse = false }: CardProps & 
           {Math.abs(indicatorValue)}
         </button>
       )}
+      {indicatorValue !== 0 && (
+        <button 
+          className={`indicator ${indicatorValue > 0 ? 'active' : ''} ${blurIndicator ? 'blurred' : ''}`}
+        >
+          {Math.abs(indicatorValue)}
+        </button>
+      )}
     </div>
   );
 };
 
 const App = () => {
+  
   const [testText, setTestText] = useState("Drinking water isn't just about quenching your thirst. It plays a crucial role in maintaining the proper functioning of your body.");
   const [indicatorValue, setIndicatorValue] = useState(10);
 
@@ -141,6 +149,7 @@ const App = () => {
   };
 
   return (
+    <>
     <div className="wrapper-app">
       <div className="text-section">
         {Array(4).fill(0).map((_, idx) => (
@@ -164,10 +173,10 @@ const App = () => {
 
       <div className="picture-block">
         <PictureCard text={testText} indicatorValue={indicatorValue} />
-        <PictureCard text={testText} indicatorValue={indicatorValue} reverse />
+        <PictureCard text={testText} indicatorValue={indicatorValue} reverse/>
       </div>
-
-      <div className="settings">
+    </div>
+    <div className="settings">
         <div className="settings-panel">
           <label>
             Text:
@@ -188,7 +197,7 @@ const App = () => {
           </label>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
