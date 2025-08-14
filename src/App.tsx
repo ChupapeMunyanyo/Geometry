@@ -30,21 +30,15 @@ const TextCard = ({ text, indicatorValue = 1 }: CardProps) => {
 
         if (indicatorValue !== 0 && indicatorRef.current) {
           const indW = indicatorRef.current.offsetWidth + 8;
-          measureEl.style.width = style.width;
+          measureEl.style.width = `calc(${style.width} - ${indW}px)`;
           measureEl.style.lineHeight = style.lineHeight;
           measureEl.style.font = style.font;
           measureEl.style.overflowWrap = style.overflowWrap;
-          measureEl.style.padding = '0';
-          measureEl.style.margin = '0';
+          measureEl.style.padding = style.padding;
+          measureEl.style.margin = style.margin;
           measureEl.textContent = text;
-          const span = document.createElement('span');
-          span.style.display = 'inline-block';
-          span.style.width = `${indW}px`;
-          span.style.height = '1px';
-          measureEl.appendChild(span);
           const measureHeight = measureEl.clientHeight;
           overflow = measureHeight > origHeight;
-          span.remove();
         }
 
         setNeedsExtraLine(overflow);
@@ -64,7 +58,7 @@ const TextCard = ({ text, indicatorValue = 1 }: CardProps) => {
       <button className="menu-dots">
         <BsThreeDots className="bs"/>
       </button>
-      <p ref={textRef}>{text}</p>
+      <p ref={textRef} style={{ marginRight: indicatorValue !== 0 ? '40px' : '0' }}>{text}</p>
       {needsExtraLine && <div style={{ height: `${lineHeight}px` }} />}
       {indicatorValue !== 0 && (
         <button
@@ -74,6 +68,7 @@ const TextCard = ({ text, indicatorValue = 1 }: CardProps) => {
           {Math.abs(indicatorValue)}
         </button>
       )}
+      <p ref={measureRef} style={{ display: 'none' }} />
     </div>
   );
 };
@@ -101,21 +96,15 @@ const TextWithImageBlock = ({ text, indicatorValue = 1 }: { text: string; imageU
 
         if (indicatorValue !== 0 && indicatorRef.current) {
           const indW = indicatorRef.current.offsetWidth + 8;
-          measureEl.style.width = style.width;
+          measureEl.style.width = `calc(${style.width} - ${indW}px)`;
           measureEl.style.lineHeight = style.lineHeight;
           measureEl.style.font = style.font;
           measureEl.style.overflowWrap = style.overflowWrap;
-          measureEl.style.padding = '0';
-          measureEl.style.margin = '0';
+          measureEl.style.padding = style.padding;
+          measureEl.style.margin = style.margin;
           measureEl.textContent = text;
-          const span = document.createElement('span');
-          span.style.display = 'inline-block';
-          span.style.width = `${indW}px`;
-          span.style.height = '1px';
-          measureEl.appendChild(span);
           const measureHeight = measureEl.clientHeight;
           overflow = measureHeight > origHeight;
-          span.remove();
         }
 
         setNeedsExtraLine(overflow);
@@ -136,7 +125,7 @@ const TextWithImageBlock = ({ text, indicatorValue = 1 }: { text: string; imageU
         </button>
         <div className="asd">
           <img src="/y300.webp" alt="Иллюстрация" />
-          <p ref={textRef}>{text}</p>
+          <p ref={textRef} style={{ marginRight: indicatorValue !== 0 ? '40px' : '0' }}>{text}</p>
         </div>
         {needsExtraLine && <div style={{ height: `${lineHeight}px` }} />}
         {indicatorValue !== 0 && (
@@ -189,7 +178,7 @@ const PictureCard = ({ text, indicatorValue = 1 }: CardProps) => {
         </button>
       )}
       <div className="text-content" style={{ alignItems: alignment }}>
-        <p ref={textRef}>{text}</p>
+        <p ref={textRef} style={{ marginRight: indicatorValue !== 0 ? '40px' : '0' }}>{text}</p>
       </div>
     </div>
   );
@@ -219,7 +208,7 @@ const PictureCardReverse = ({ text, indicatorValue = 1 }: CardProps) => {
   return (
     <div className="picture-card">
       <div className="text-content" style={{ alignItems: alignment }}>
-        <p ref={textRef}>{text}</p>
+        <p ref={textRef} style={{ marginRight: indicatorValue !== 0 ? '40px' : '0' }}>{text}</p>
       </div>
       <img
         src="https://i.pinimg.com/736x/83/9a/cb/839acb672adb9d908888f435c6244c3f.jpg"
@@ -300,4 +289,4 @@ const App = () => {
     </div>
   );
 };
-export default App
+export default App;
