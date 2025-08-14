@@ -64,12 +64,14 @@ const TextWithImageBlock = ({ text, indicatorValue = 1 }: CardProps) => {
 
   return (
     <div className="image-text-card" style={{ alignItems: alignment }}>
-      <img src="/y300.webp" alt="Иллюстрация" />
       <div className="text-content">
         <button className="menu-dots">
           <BsThreeDots className="bs" />
         </button>
-        <p ref={textRef}>{text}</p>
+        <div className="asd">
+          <img src="/y300.webp" alt="Иллюстрация" />
+          <p ref={textRef}>{text}</p>
+        </div>
         {indicatorValue !== 0 && (
           <button className={`indicator ${indicatorValue > 0 ? 'active' : ''}`}>
             {Math.abs(indicatorValue)}

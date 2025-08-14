@@ -119,6 +119,7 @@ body {
 }
 
 .text-card {
+  min-height: 90px;
   width: 345px;
   display: grid;
   grid-template-columns: auto 1fr auto;
