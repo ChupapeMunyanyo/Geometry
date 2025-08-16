@@ -8,31 +8,31 @@ body {
 
 .text-card {
   width: 415px;
+  min-height: 94px;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  padding: 30px;
+  padding: 16px 25px;
   box-sizing: border-box;
   overflow: hidden;
   border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 25px;
   position: relative;
   background: #fff;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  min-height: 90px;
 }
 
 .text-card.single-line {
-  grid-template-columns: auto 1fr auto;
-  padding: 16px 28px;
+  padding: 24px 25px;
 }
 
 .text-card.multi-line {
-  padding: 16px;
+  padding: 16px 25px;
 }
 
 .text-card p {
-  padding-bottom: 5px;
+  padding-top: 20px;
+  padding-bottom: 20px;
   width: 375px;
   margin: 0;
   text-align: left;
@@ -43,8 +43,8 @@ body {
 
 .menu-dots {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 9px;
+  right: 12px;
   background: rgba(0,0,0,0);
   border: none;
   border-radius: 50%;
@@ -58,7 +58,6 @@ body {
   transition: background 0.2s ease;
   scale: 1.8;
 }
-
 .menu-dots:hover {
   background: rgba(0, 0, 0, 0.05);
 }
@@ -70,8 +69,8 @@ body {
 .indicator {
   opacity: 0.6;
   position: absolute;
-  bottom: 8px;
-  right: 8px;
+  right: 15px; /* Отступ от правой стенки 9px */
+  bottom: 9px;
   background-color: rgba(0,0,0,0);
   border: 1px solid grey;
   border-radius: 12px;
@@ -113,12 +112,13 @@ body {
   align-items: center;
   gap: 20px;
   width: 415px;
+  min-height: 80px;
   padding: 33px;
   padding-left: 16px;
   box-sizing: border-box;
   overflow: hidden;
   border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 25px;
   position: relative;
   background: #fff;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -159,7 +159,6 @@ body {
   padding-bottom: 5px;
   overflow: visible;
   border: 1px solid #ddd;
-  border-radius: 8px;
   position: relative;
   background: #fff;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -174,9 +173,32 @@ body {
   height: 181px;
   object-fit: cover;
   display: block;
-  border-radius: 8px 8px 0 0;
 }
 
+.picture-card img:nth-child(1) {
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+.picture-card img:nth-child(2) {
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border-bottom-left-radius: 25px;
+  border-bottom-right-radius: 25px;
+}
+.picture-card:nth-child(2) {
+  border-bottom-left-radius: 25px;
+  border-bottom-right-radius: 25px;
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+}
+.picture-card:nth-child(1) {
+  border-bottom-left-radius: 25px;
+  border-bottom-right-radius: 25px;
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+}
 .picture-card .text-content p {
   margin: 0;
   word-wrap: break-word;
@@ -185,9 +207,11 @@ body {
   line-height: 1.4;
   animation: fadeIn 0.3s ease;
   width: 375px;
+  min-height: 25.5px;
   padding: 30px;
   padding-left: 16px;
 }
+
 .wrapper-app {
   display: flex;
   gap: 40px;
@@ -201,7 +225,7 @@ body {
 .text-section {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 37px;
   width: 345px;
   flex-shrink: 0;
 }
@@ -209,7 +233,7 @@ body {
 .image-text-section {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 21px;
   width: 345px;
   flex-shrink: 0;
   margin-top: 0;

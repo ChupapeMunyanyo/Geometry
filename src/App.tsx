@@ -28,7 +28,7 @@ const TextCard = ({ text, indicatorValue = 1 }: CardProps) => {
   }, [text]);
   
   return (
-    <div className={`text-card ${isSingleLine ? 'single-line' : ''}`}>
+    <div className={`text-card ${isSingleLine ? 'single-line' : 'multi-line'}`}>
       <button className="menu-dots">
         <BsThreeDots className="bs"/>
       </button>
@@ -41,7 +41,6 @@ const TextCard = ({ text, indicatorValue = 1 }: CardProps) => {
     </div>
   );
 };
-
 const TextWithImageBlock = ({ text, indicatorValue = 1 }: CardProps) => {
   const textRef = useRef<HTMLParagraphElement>(null);
   const [alignment, setAlignment] = useState<'center' | 'flex-start'>('center');
