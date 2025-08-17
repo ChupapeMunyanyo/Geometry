@@ -35,81 +35,86 @@ const TextCard = ({ text, indicatorValue = 1 }: CardProps) => {
       <p ref={textRef}>{text}</p>
       {indicatorValue !== 0 && (
         <button className={`indicator ${indicatorValue > 0 ? 'active' : ''}`}>
-          {Math.abs(indicatorValue)}
+          {indicatorValue > 0 ? `+${indicatorValue}` : Math.abs(indicatorValue)}
         </button>
       )}
     </div>
   );
 };
+
 const TextWithImageBlock = ({ text, indicatorValue = 1 }: CardProps) => {
   const textRef = useRef<HTMLParagraphElement>(null);
-  const [alignment, setAlignment] = useState<'center' | 'flex-start'>('center');
+  const [linesCount, setLinesCount] = useState(1);
 
   useEffect(() => {
-    const checkAlignment = () => {
+    const checkLines = () => {
       if (textRef.current) {
         const lineHeight = parseInt(getComputedStyle(textRef.current).lineHeight, 10) || 24;
         const height = textRef.current.clientHeight;
-        setAlignment(height > lineHeight * 2 ? 'flex-start' : 'center');
+        const lines = Math.round(height / lineHeight);
+        setLinesCount(lines);
       }
     };
 
-    checkAlignment();
-    const observer = new ResizeObserver(checkAlignment);
+    checkLines();
+    const observer = new ResizeObserver(checkLines);
     if (textRef.current) observer.observe(textRef.current);
     
     return () => observer.disconnect();
   }, [text]);
 
   return (
-    <div className="image-text-card" style={{ alignItems: alignment }}>
-      <div className="text-content">
-        <button className="menu-dots">
-          <BsThreeDots className="bs" />
-        </button>
-        <div className="asd">
-          <img src="a4989700c519ce886523f0185b0c77105648b279.jpg" alt="Иллюстрация" />
-          <p ref={textRef}>{text}</p>
-        </div>
-        {indicatorValue !== 0 && (
-          <button className={`indicator ${indicatorValue > 0 ? 'active' : ''}`}>
-            {Math.abs(indicatorValue)}
-          </button>
-        )}
+    <div className="image-text-card">
+      <button className="menu-dots">
+        <BsThreeDots className="bs" />
+      </button>
+      <div className="image-text-wrapper">
+        <img src="a4989700c519ce886523f0185b0c77105648b279.jpg" alt="Иллюстрация" />
+        <p 
+          ref={textRef} 
+          className={`image-text ${linesCount <= 3 ? 'centered' : 'top-aligned'}`}
+        >
+          {text}
+        </p>
       </div>
+      {indicatorValue !== 0 && (
+        <button className={`indicator ${indicatorValue > 0 ? 'active' : ''}`}>
+          {indicatorValue > 0 ? `+${indicatorValue}` : Math.abs(indicatorValue)}
+        </button>
+      )}
     </div>
   );
 };
 
-const PictureCard = ({ text, indicatorValue = 1, reverse = false, blurIndicator = false }: CardProps & { reverse?: boolean, blurIndicator?: boolean }) => {
+const PictureCard = ({ text, indicatorValue = 1, reverse = false }: CardProps & { reverse?: boolean, blurIndicator?: boolean }) => {
   const textRef = useRef<HTMLParagraphElement>(null);
-  const [alignment, setAlignment] = useState<'center' | 'flex-start'>('center');
+  const [isSingleLine, setIsSingleLine] = useState(false);
 
   useEffect(() => {
-    const checkAlignment = () => {
+    const checkLines = () => {
       if (textRef.current) {
         const lineHeight = parseInt(getComputedStyle(textRef.current).lineHeight, 10) || 24;
         const height = textRef.current.clientHeight;
-        setAlignment(height > lineHeight * 2 ? 'flex-start' : 'center');
+        setIsSingleLine(height <= lineHeight * 1.5);
       }
     };
 
-    checkAlignment();
-    const observer = new ResizeObserver(checkAlignment);
+    checkLines();
+    const observer = new ResizeObserver(checkLines);
     if (textRef.current) observer.observe(textRef.current);
     
     return () => observer.disconnect();
   }, [text]);
   
   return (
-    <div className="picture-card">
+    <div className={`picture-card ${isSingleLine ? 'single-line' : 'multi-line'}`}>
       {!reverse && (
         <img
           src="278a6ae038bb6ade654115eda25da9a94265964f.jpg"
           alt="Picture"
         />
       )}
-      <div className="text-content" style={{ alignItems: alignment }}>
+      <div className="text-content">
         <p ref={textRef}>{text}</p>
       </div>
       {reverse && (
@@ -123,14 +128,7 @@ const PictureCard = ({ text, indicatorValue = 1, reverse = false, blurIndicator 
       </button>
       {indicatorValue !== 0 && (
         <button className={`indicator ${indicatorValue > 0 ? 'active' : ''}`}>
-          {Math.abs(indicatorValue)}
-        </button>
-      )}
-      {indicatorValue !== 0 && (
-        <button 
-          className={`indicator ${indicatorValue > 0 ? 'active' : ''} ${blurIndicator ? 'blurred' : ''}`}
-        >
-          {Math.abs(indicatorValue)}
+          {indicatorValue > 0 ? `+${indicatorValue}` : Math.abs(indicatorValue)}
         </button>
       )}
     </div>
@@ -138,7 +136,6 @@ const PictureCard = ({ text, indicatorValue = 1, reverse = false, blurIndicator 
 };
 
 const App = () => {
-  
   const [testText, setTestText] = useState("Drinking water isn't just about quenching your thirst. It plays a crucial role in maintaining the proper functioning of your body.");
   const [indicatorValue, setIndicatorValue] = useState(10);
 
@@ -149,33 +146,33 @@ const App = () => {
 
   return (
     <>
-    <div className="wrapper-app">
-      <div className="text-section">
-        {Array(4).fill(0).map((_, idx) => (
-          <TextCard 
-            key={`text-${idx}`} 
-            text={testText} 
-            indicatorValue={indicatorValue}
-          />
-        ))}
-      </div>
+      <div className="wrapper-app">
+        <div className="text-section">
+          {Array(4).fill(0).map((_, idx) => (
+            <TextCard 
+              key={`text-${idx}`} 
+              text={testText} 
+              indicatorValue={indicatorValue}
+            />
+          ))}
+        </div>
 
-      <div className="image-text-section">
-        {Array(4).fill(0).map((_, idx) => (
-          <TextWithImageBlock 
-            key={`img-text-${idx}`} 
-            text={testText} 
-            indicatorValue={indicatorValue}
-          />
-        ))}
-      </div>
+        <div className="image-text-section">
+          {Array(4).fill(0).map((_, idx) => (
+            <TextWithImageBlock 
+              key={`img-text-${idx}`} 
+              text={testText} 
+              indicatorValue={indicatorValue}
+            />
+          ))}
+        </div>
 
-      <div className="picture-block">
-        <PictureCard text={testText} indicatorValue={indicatorValue} />
-        <PictureCard text={testText} indicatorValue={indicatorValue} reverse/>
+        <div className="picture-block">
+          <PictureCard text={testText} indicatorValue={indicatorValue} />
+          <PictureCard text={testText} indicatorValue={indicatorValue} reverse/>
+        </div>
       </div>
-    </div>
-    <div className="settings">
+      <div className="settings">
         <div className="settings-panel">
           <label>
             Text:
