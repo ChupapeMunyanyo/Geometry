@@ -10,7 +10,6 @@ type CardProps = {
 const TextCard = ({ text, indicatorValue = 1 }: CardProps) => {
   const textRef = useRef<HTMLParagraphElement>(null);
   const [isSingleLine, setIsSingleLine] = useState(false);
-  
   useEffect(() => {
     const checkLines = () => {
       if (textRef.current) {
@@ -29,15 +28,17 @@ const TextCard = ({ text, indicatorValue = 1 }: CardProps) => {
   
   return (
     <div className={`text-card ${isSingleLine ? 'single-line' : 'multi-line'}`}>
-      <button className="menu-dots">
-        <BsThreeDots className="bs"/>
-      </button>
-      <p ref={textRef}>{text}</p>
-      {indicatorValue !== 0 && (
-        <button className={`indicator ${indicatorValue > 0 ? 'active' : ''}`}>
-          {indicatorValue > 0 ? `+${indicatorValue}` : Math.abs(indicatorValue)}
+      <div className="menu-dots-container">
+        <button className="menu-dots">
+          <BsThreeDots className='bs'/>
         </button>
-      )}
+        {indicatorValue !== 0 && (
+          <button className={`indicator ${indicatorValue > 0 ? 'active' : ''}`}>
+            {indicatorValue > 0 ? `+${indicatorValue}` : Math.abs(indicatorValue)}
+          </button>
+        )}
+      </div>
+      <p ref={textRef}>{text}</p>
     </div>
   );
 };
@@ -45,7 +46,6 @@ const TextCard = ({ text, indicatorValue = 1 }: CardProps) => {
 const TextWithImageBlock = ({ text, indicatorValue = 1 }: CardProps) => {
   const textRef = useRef<HTMLParagraphElement>(null);
   const [linesCount, setLinesCount] = useState(1);
-
   useEffect(() => {
     const checkLines = () => {
       if (textRef.current) {
@@ -65,9 +65,16 @@ const TextWithImageBlock = ({ text, indicatorValue = 1 }: CardProps) => {
 
   return (
     <div className="image-text-card">
-      <button className="menu-dots">
-        <BsThreeDots className="bs" />
-      </button>
+      <div className="menu-dots-container">
+        <button className="menu-dots">
+          <BsThreeDots className='bs'/>
+        </button>
+        {indicatorValue !== 0 && (
+          <button className={`indicator ${indicatorValue > 0 ? 'active' : ''}`}>
+            {indicatorValue > 0 ? `+${indicatorValue}` : Math.abs(indicatorValue)}
+          </button>
+        )}
+      </div>
       <div className="image-text-wrapper">
         <img src="a4989700c519ce886523f0185b0c77105648b279.jpg" alt="Иллюстрация" />
         <p 
@@ -77,19 +84,13 @@ const TextWithImageBlock = ({ text, indicatorValue = 1 }: CardProps) => {
           {text}
         </p>
       </div>
-      {indicatorValue !== 0 && (
-        <button className={`indicator ${indicatorValue > 0 ? 'active' : ''}`}>
-          {indicatorValue > 0 ? `+${indicatorValue}` : Math.abs(indicatorValue)}
-        </button>
-      )}
     </div>
   );
 };
 
-const PictureCard = ({ text, indicatorValue = 1, reverse = false }: CardProps & { reverse?: boolean, blurIndicator?: boolean }) => {
+const PictureCard = ({ text, indicatorValue = 1, reverse = false }: CardProps & { reverse?: boolean }) => {
   const textRef = useRef<HTMLParagraphElement>(null);
   const [isSingleLine, setIsSingleLine] = useState(false);
-
   useEffect(() => {
     const checkLines = () => {
       if (textRef.current) {
@@ -123,26 +124,33 @@ const PictureCard = ({ text, indicatorValue = 1, reverse = false }: CardProps & 
           alt="Picture"
         />
       )}
-      <button className="menu-dots">
-        <BsThreeDots className="bs"/>
-      </button>
-      {indicatorValue !== 0 && (
-        <button className={`indicator ${indicatorValue > 0 ? 'active' : ''}`}>
-          {indicatorValue > 0 ? `+${indicatorValue}` : Math.abs(indicatorValue)}
+      <div className="menu-dots-container">
+        <button className="menu-dots">
+          <BsThreeDots className='bs'/>
         </button>
-      )}
+        {indicatorValue !== 0 && (
+          <button className={`indicator ${indicatorValue > 0 ? 'active' : 'negative'}`}>
+            {indicatorValue > 0 ? `+${indicatorValue}` : Math.abs(indicatorValue)}
+          </button>
+        )}
+      </div>
     </div>
   );
 };
 
 const App = () => {
-  const [testText, setTestText] = useState("Drinking water isn't just about quenching your thirst. It plays a crucial role in maintaining the proper functioning of your body.");
+  const [testText, setTestText] = useState("Drinking water isn't just about quenching your thirst. It plays a crucial role in  in maintaining the a bbbbbbbbb");
   const [indicatorValue, setIndicatorValue] = useState(10);
 
   const handleIndicatorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const num = parseInt(e.target.value, 10) || 0;
     setIndicatorValue(Math.max(-9999, Math.min(9999, num)));
   };
+
+
+
+
+
 
   return (
     <>
